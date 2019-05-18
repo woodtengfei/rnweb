@@ -1,0 +1,46 @@
+{
+  "name": "rnweb",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "ios": "react-native run-ios",
+    "android": "react-native run-android",
+    "web-build": "make-dir dist && cp -f web/index.html dist/index.html && cross-env NODE_ENV=development ./node_modules/.bin/webpack-cli --config ./web/webpack.config.js",
+    "web-release": "./node_modules/.bin/webpack -p --config ./web/webpack.config.js",
+    "web": "yarn web-build && ./node_modules/.bin/webpack-dev-server -d --config ./web/webpack.config.js --progress --inline --hot --colors",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.4.4",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-native": "0.59.8",
+    "react-native-web": "^0.11.2"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.4.4",
+    "@babel/core": "^7.4.4",
+    "@babel/plugin-transform-runtime": "^7.4.4",
+    "@babel/preset-env": "^7.4.4",
+    "@babel/preset-react": "^7.0.0",
+    "babel-jest": "^24.8.0",
+    "babel-loader": "^8.0.6",
+    "babel-plugin-module-resolver": "^3.2.0",
+    "babel-plugin-react-native-web": "^0.11.2",
+    "cross-env": "^5.2.0",
+    "jest": "^24.8.0",
+    "make-dir-cli": "^2.0.0",
+    "metro-react-native-babel-preset": "^0.54.1",
+    "react-test-renderer": "16.8.3",
+    "source-map-loader": "^0.2.4",
+    "url-loader": "^1.1.2",
+    "webpack": "^4.31.0",
+    "webpack-bundle-analyzer": "^3.3.2",
+    "webpack-cli": "^3.3.2",
+    "webpack-dev-server": "^3.3.1"
+  },
+  "jest": {
+    "preset": "react-native"
+  }
+}
