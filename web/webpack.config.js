@@ -8,10 +8,14 @@
 const path = require('path');
 const webpack = require('webpack');
 
+/** 用于编译Webpack项目中的html类型的文件，动态生成html文件入口 */
+const htmlWebpackPlugin=require('html-webpack-plugin');
 /** 打包体积优化，详细分布查看插件 */
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 /** __dirname是node.js中的一个全局变量，它指向当前执行脚本所在的目录 */
 const appDirectory = path.resolve(__dirname, '../');
+/** rn-web中没有__DEV__ */
+const __DEV__ = process.env.NODE_ENV === 'development';
 
 /**
  * Babel其实是一个编译JavaScript的平台
@@ -27,6 +31,36 @@ const babelLoaderConfiguration = {
     path.resolve(appDirectory, 'index.js'),
     /** 子目录src下所有文件 */
     path.resolve(appDirectory, 'src'),
+    path.resolve(appDirectory, 'node_modules/react-navigation'),
+    path.resolve(appDirectory, 'node_modules/crypto-js'),
+    path.resolve(appDirectory, 'node_modules/lodash'),
+    path.resolve(appDirectory, 'node_modules/native-base'),
+    // path.resolve(appDirectory, 'node_modules/prop-types'),
+    path.resolve(appDirectory, 'node_modules/querystring'),
+    path.resolve(appDirectory, 'node_modules/react-art'),
+    path.resolve(appDirectory, 'node_modules/react-native-cached-image'),
+    path.resolve(appDirectory, 'node_modules/react-native-code-push'),
+    path.resolve(appDirectory, 'node_modules/react-native-device-info'),
+    path.resolve(appDirectory, 'node_modules/react-native-elements'),
+    path.resolve(appDirectory, 'node_modules/react-native-fetch-blob'),
+    path.resolve(appDirectory, 'node_modules/react-native-gesture-handler'),
+    path.resolve(appDirectory, 'node_modules/react-native-i18n'),
+    path.resolve(appDirectory, 'node_modules/react-native-image-picker'),
+    path.resolve(appDirectory, 'node_modules/react-native-linear-gradient'),
+    path.resolve(appDirectory, 'node_modules/react-native-loading-spinner-overlay'),
+    path.resolve(appDirectory, 'node_modules/react-native-root-toast'),
+    path.resolve(appDirectory, 'node_modules/react-native-scrollable-tab-view'),
+    path.resolve(appDirectory, 'node_modules/react-native-splash-screen'),
+    path.resolve(appDirectory, 'node_modules/react-native-storage'),
+    path.resolve(appDirectory, 'node_modules/react-native-swiper'),
+    path.resolve(appDirectory, 'node_modules/react-native-webview'),
+    path.resolve(appDirectory, 'node_modules/react-navigation'),
+    path.resolve(appDirectory, 'node_modules/@react-navigation'),
+    path.resolve(appDirectory, 'node_modules/react-native-vector-icons'),
+    path.resolve(appDirectory, 'node_modules/react-native-ratings'),
+    path.resolve(appDirectory, 'node_modules/react-native-root-siblings'),
+    path.resolve(appDirectory, 'node_modules/react-native-tab-view'),
+    path.resolve(appDirectory, 'node_modules/static-container'),
     path.resolve(appDirectory, 'node_modules/react-native-uncompiled')
   ],
   use: {
@@ -36,7 +70,15 @@ const babelLoaderConfiguration = {
       cacheDirectory: true,
       /** 这一句不能少，使用babel.config.js中的配置 */
       presets: ['module:metro-react-native-babel-preset'],
+      plugins: ['react-native-web']
     }
+  }
+};
+
+const htmlLoaderConfiguration = {
+  test: /\.html$/,
+  use: {
+    loader: 'html-loader'
   }
 };
 
@@ -45,7 +87,7 @@ const imageLoaderConfiguration = {
   use: {
     /**
      * file-loader解决路径问题，url-loader根据limit值对图片编码，生成dataURl
-     * url-loader内置了file-loader
+     * 当配置limit上限值，此时url-loader依赖file-loader
      * */
     loader: 'url-loader',
     options: {
@@ -88,18 +130,24 @@ module.exports = {
   module: {
     rules: [
       babelLoaderConfiguration,
+      htmlLoaderConfiguration,
       imageLoaderConfiguration
     ]
   },
   plugins: [
     /** DefinePlugin允许我们创建全局变量 */
     new webpack.DefinePlugin({
-      // 'process.env.NODE_ENV': JSON.stringify(true)
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+      __DEV__,
     }),
     new BundleAnalyzerPlugin({
       analyzerMode: 'static',
       openAnalyzer: false
-    })
+    }),
+    // new htmlWebpackPlugin({
+    //   filename: 'web/index.html',
+    //   template: 'index.html',
+    // })
   ],
   /**
    * resolve配置模块如何解析

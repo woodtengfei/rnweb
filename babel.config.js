@@ -3,16 +3,21 @@ module.exports = function (api) {
 
   const presets = [
     'module:metro-react-native-babel-preset',
-    '@babel/preset-env',
+    ['@babel/preset-env', {
+      useBuiltIns: 'usage',
+      corejs: 3
+    }],
     '@babel/preset-react',
-    // 'react-native'
   ];
   const plugins = [
     ['module-resolver', {
       alias: {
         '^react-native$': 'react-native-web'
       }
-    }]
+    }],
+    '@babel/transform-runtime',
+    '@babel/proposal-class-properties',
+    'transform-class-properties',
   ];
 
   return {
